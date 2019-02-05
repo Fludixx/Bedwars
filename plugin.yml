@@ -1,0 +1,13 @@
+name: "Bedwars"
+description: "Bedwars Plugin for Pocketmine"
+version: 1.4
+api: [3.0.0]
+author: Fludixx
+main: Fludixx\Bedwars\Bedwars
+permissions:
+  bw.admin:
+    description: "Allows the Owner of the Permission to manage Bedwars Arenas"
+    default: op
+  bw.build:
+    description: "Allows the Owner of the Permission to use /bwbuild"
+    default: op
