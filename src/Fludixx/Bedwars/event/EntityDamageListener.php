@@ -35,7 +35,7 @@ class EntityDamageListener implements Listener {
 					Bedwars::$arenas[$levelname]->broadcast("§e" . Bedwars::$players[$player->getName()]->getName() . "§f wurde von §e" .
 						Bedwars::$players[$damager->getName()]->getName() . " §fgetötet!");
                     Bedwars::$statsSystem->set($player, 'deaths', (int)Bedwars::$statsSystem->get($player, 'deaths')+1);
-                    Bedwars::$statsSystem->set($damager, 'deaths', (int)Bedwars::$statsSystem->get($damager, 'deaths')+1);
+                    Bedwars::$statsSystem->set($damager, 'kills', (int)Bedwars::$statsSystem->get($damager, 'deaths')+1);
                     Bedwars::$players[$player->getName()]->die();
 				}
 				return;
@@ -83,7 +83,7 @@ class EntityDamageListener implements Listener {
 				if($player->getHealth() <= $event->getFinalDamage()) {
 					$event->setCancelled(TRUE);
 					$levelname = $player->getLevel()->getFolderName();
-					if(!is_null(Bedwars::$players[$player->getName()]->getKnocker())) {
+					if(is_string(Bedwars::$players[$player->getName()]->getKnocker())) {
 						Bedwars::$arenas[$levelname]->broadcast("§e" . Bedwars::$players[$player->getName()]->getName() . "§f wurde von §e" .
 							Bedwars::$players[$player->getName()]->getKnocker() . " §fgetötet!");
 					} else {
