@@ -30,6 +30,10 @@ use Fludixx\Bedwars\task\BWTask;
 use Fludixx\Bedwars\task\SignTask;
 use muqsit\invmenu\InvMenuHandler;
 use pocketmine\block\Block;
+use pocketmine\command\Command;
+use pocketmine\command\CommandSender;
+use pocketmine\level\Position;
+use pocketmine\Player;
 use pocketmine\plugin\PluginBase;
 use pocketmine\utils\Config;
 
@@ -102,7 +106,7 @@ class Bedwars extends PluginBase {
             InvMenuHandler::register(Bedwars::getInstance());
 	}
 
-	protected function registerEvents() {
+    protected function registerEvents() {
 		$pm = $this->getServer()->getPluginManager();
 		$pm->registerEvents(new PlayerJoinListener(), $this);
 		$pm->registerEvents(new EntityDamageListener(), $this);

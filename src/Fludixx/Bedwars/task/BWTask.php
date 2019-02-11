@@ -112,7 +112,7 @@ class BWTask extends Task {
 				foreach ($arena->getPlayers() as $player) {
 					$mplayer = Bedwars::$players[$player->getName()];
 					if($mplayer->getPos() > 0)
-					    $teamsAlive[] = $mplayer->getPos();
+					    $teamsAlive[$mplayer->getPos()] = 0;
 					$sb->setLine(1, "Team: ".Utils::ColorInt2Color(Utils::teamIntToColorInt($mplayer->getPos())));
 					$sb->setLine(2, "\0");
 					$i = 3;
