@@ -51,7 +51,7 @@ class EntityDamageListener implements Listener {
 			    $mdamager->setVaule('hit', $player->getName());
 			    $mplayer = Bedwars::$players[$player->getName()];
 			    $mdamager->sendMsg("Du hast {$mplayer->getName()} herrausgefordet!");
-			    $mplayer->sendMsg("{$mplayer->getName()} hat dich herrausgefordet!");
+			    $mplayer->sendMsg("{$mdamager->getName()} hat dich herrausgefordet!");
 			    if($mplayer->getVaule('hit') === $damager->getName()) {
 			        $mplayer->sendMsg("Suche Arena...");
 			        $mdamager->sendMsg("Suche Arena...");
