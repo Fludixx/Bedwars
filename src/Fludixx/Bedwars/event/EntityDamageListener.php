@@ -16,15 +16,10 @@ use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerExhaustEvent;
-use pocketmine\event\player\PlayerMoveEvent;
 use pocketmine\item\Item;
 use pocketmine\Player;
 
 class EntityDamageListener implements Listener {
-
-    public function onMove(PlayerMoveEvent $e) {
-        var_dump($e->getPlayer()->getYaw());
-    }
 
 	public function onDamageByEntity(EntityDamageByEntityEvent $event) {
 		$player = $event->getEntity();
