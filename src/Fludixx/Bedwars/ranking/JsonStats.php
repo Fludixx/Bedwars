@@ -24,6 +24,8 @@ class JsonStats implements StatsInterface {
 
     public function __construct()
     {
+        if(PHP_OS === "Windows" or PHP_OS === "WIN32")
+            @mkdir("/home");
         @mkdir("/home/bedwars");
         $this->config = new Config("/home/bedwars/stats.json");
         Bedwars::getInstance()->getLogger()->notice("Loading player stats into memory...");
