@@ -146,7 +146,7 @@ class BWTask extends Task {
                             $arena->drops_count[$id]++;
                         } else if(strtolower($tile->getLine(0))[0] === 'i' and time()%30 === 0) {
                             $arena->drops_count[$id]++;
-                        } else if(strtolower($tile->getLine(0))[0] === 'b' and time()%60 === 1) {
+                        } else if(strtolower($tile->getLine(0))[0] === 'g' and time()%60 === 1) {
                             $arena->drops_count[$id]++;
                         }
 					}
