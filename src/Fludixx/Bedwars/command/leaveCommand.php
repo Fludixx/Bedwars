@@ -29,9 +29,11 @@ class leaveCommand extends Command {
 	{
 		if($sender instanceof Player) {
 			$player = Bedwars::$players[$sender->getName()];
+			$player->getPlayer()->setGamemode(0);
 			$player->rmScoreboard($sender->getLevel()->getFolderName());
 			$player->saveTeleport(Bedwars::getInstance()->getServer()->getDefaultLevel()->getSafeSpawn());
 			$player->setPos(0);
+			$player->setSpectator(FALSE);
             $sender->getInventory()->setContents([
                 0 => Item::get(Item::IRON_SWORD)
             ]);

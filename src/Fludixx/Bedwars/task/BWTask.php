@@ -87,13 +87,15 @@ class BWTask extends Task {
                     }
 					foreach ($arena->getPlayers() as $player) {
 						$mplayer = Bedwars::$players[$player->getName()];
-						$mplayer->setPos($mplayer->getTeam());
-						$mplayer->setTeam(0);
-						$player->getInventory()->clearAll();
-						$player->getArmorInventory()->clearAll();
-						$mplayer->sendMsg("Das Spiel ist gestartet!");
-						$player->teleport($arena->getSpawns()[$mplayer->getPos()]);
-						$player->setDisplayName(Utils::ColorInt2Color(Utils::teamIntToColorInt($mplayer->getPos()))." ".$player->getName());
+						if(!$mplayer->isSpectator()) {
+                            $mplayer->setPos($mplayer->getTeam());
+                            $mplayer->setTeam(0);
+                            $player->getInventory()->clearAll();
+                            $player->getArmorInventory()->clearAll();
+                            $mplayer->sendMsg("Das Spiel ist gestartet!");
+                            $player->teleport($arena->getSpawns()[$mplayer->getPos()]);
+                            $player->setDisplayName(Utils::ColorInt2Color(Utils::teamIntToColorInt($mplayer->getPos())) . " " . $player->getName());
+                        }
 					}
 				}
 			} else if($arena->getCountdown() <= 0) {
@@ -102,11 +104,13 @@ class BWTask extends Task {
 				$beds = [];
 				foreach ($arena->getPlayers() as $player) {
 					$mplayer = Bedwars::$players[$player->getName()];
-					if(!isset($beds[$mplayer->getPos()])) {
-						$beds[$mplayer->getPos()] = ['c' => 1, 's' => $arena->getBeds()[$mplayer->getPos()]];
-					} else {
-						$beds[$mplayer->getPos()]['c']++;
-					}
+                    if(!$mplayer->isSpectator()) {
+                        if (!isset($beds[$mplayer->getPos()])) {
+                            $beds[$mplayer->getPos()] = ['c' => 1, 's' => $arena->getBeds()[$mplayer->getPos()]];
+                        } else {
+                            $beds[$mplayer->getPos()]['c']++;
+                        }
+                    }
 				}
 				$teamsAlive = [];
 				foreach ($arena->getPlayers() as $player) {
@@ -121,21 +125,28 @@ class BWTask extends Task {
 						$sb->setLine($i, Utils::ColorInt2Color(Utils::teamIntToColorInt($team)).": $bedState §f{$bed['c']}§7/§f{$arena->getPlayersProTeam()}");
 						$i++;
 					}
+					if($mplayer->isSpectator()) {
+					    $sb->addLine("§7SPECTATOR");
+                    }
 					$mplayer->sendScoreboard($sb);
 				}
 				if(count($teamsAlive) < 2) {
 					foreach ($arena->getPlayers() as $player) {
 						$mplayer = Bedwars::$players[$player->getName()];
-						$mplayer->getPlayer()->addTitle("§aDu hast gewonnen!");
-						$mplayer->setPos(0);
-                        $player->getInventory()->setContents([
-                            0 => Item::get(Item::IRON_SWORD)
-                        ]);
-						$player->getArmorInventory()->clearAll();
-						$player->setDisplayName($player->getName());
-						$mplayer->saveTeleport(Bedwars::getInstance()->getServer()->getDefaultLevel()->getSafeSpawn());
-						$arena->reset();
+                        if(!$mplayer->isSpectator()) {
+                            $mplayer->getPlayer()->addTitle("§aDu hast gewonnen!");
+                            $mplayer->setPos(0);
+                            $player->getInventory()->setContents([
+                                0 => Item::get(Item::IRON_SWORD)
+                            ]);
+                            $player->getArmorInventory()->clearAll();
+                            $player->setDisplayName($player->getName());
+                            $mplayer->saveTeleport(Bedwars::getInstance()->getServer()->getDefaultLevel()->getSafeSpawn());
+                        } else {
+                            Bedwars::getInstance()->getServer()->dispatchCommand($mplayer->getPlayer(), "leave");
+                        }
 					}
+                    $arena->reset();
 				}
 
 				foreach ($arena->getLevel()->getTiles() as $tile) {

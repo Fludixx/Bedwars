@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace Fludixx\Bedwars\event;
 
+use Fludixx\Bedwars\Arena;
 use Fludixx\Bedwars\Bedwars;
 use Fludixx\Bedwars\utils\Utils;
 use muqsit\invmenu\InvMenu;
@@ -49,7 +50,17 @@ class InteractListener implements Listener {
                     $arena->broadcast("{$mplayer->getName()} ist beigetreten!");
                     return;
                 }
-			}
+			} else if($tile->getLine(3) === Bedwars::RUNNING or $tile->getLine(3) === Bedwars::FULL) {
+                $arena = Bedwars::$arenas[$tile->getLine(1)];
+                if($arena->getState() === Arena::STATE_INUSE) {
+                    $mplayer->sendMsg("Teleportiere...");
+                    $inv = $mplayer->getPlayer()->getInventory();
+                    $inv->setItem(0, Item::get(Item::SLIME_BALL)->setCustomName("§cLeave"));
+                    $mplayer->setSpectator();
+                    $mplayer->getPlayer()->setGamemode(3);
+                    $mplayer->saveTeleport($arena->getLevel()->getSafeSpawn());
+                }
+            }
 			$mplayer->sendMsg("Du kannst dieser Runde nicht beitreten!");
 		}
 		switch ($event->getItem()->getCustomName()) {

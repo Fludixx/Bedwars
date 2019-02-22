@@ -43,6 +43,8 @@ class BWPlayer {
 	protected $extraData = [];
 	/** @var bool */
 	protected $canBuild = FALSE;
+	/** @var bool */
+	protected $isSpectator = FALSE;
 
 	/**
 	 * BWPlayer constructor.
@@ -109,6 +111,22 @@ class BWPlayer {
 	{
 		return $this->player;
 	}
+
+    /**
+     * @param bool $isSpectator
+     */
+    public function setSpectator($isSpectator = TRUE)
+    {
+        $this->isSpectator = $isSpectator;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isSpectator()
+    {
+        return $this->isSpectator;
+    }
 
 	/**
 	 * @param string $knocker
