@@ -48,7 +48,7 @@ class Bedwars extends PluginBase {
 	const PREFIX  = "§7[§cBedwars§7] §f";
 	const JOIN    = "§a[JOIN]";
 	const FULL    = "§c[VOLL]";
-	const RUNNING = "§e[LÄUFT]";
+	const RUNNING = "§7[SPECTATE]";
 	const BLOCKS = [
 		Block::SANDSTONE, Block::END_STONE, Block::GLASS,
 		Block::CHEST, Block::IRON_BLOCK, Block::COBWEB
