@@ -31,7 +31,7 @@ class SignTask extends Task {
 				$players = count($arena->getPlayers());
 				if($players < ((int)$arena->getPlayersProTeam() * (int)$arena->getTeams())) {
 					$state = $arena->getState() === Arena::STATE_OPEN ? Bedwars::JOIN : Bedwars::RUNNING;
-				} else if($arena->getState() !== Arena::STATE_INUSE) {
+				} else {
 					$state = Bedwars::FULL;
 				}
 				$tile->setLine(3, $state);
