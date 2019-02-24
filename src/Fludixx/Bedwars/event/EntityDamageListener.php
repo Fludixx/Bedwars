@@ -83,12 +83,12 @@ class EntityDamageListener implements Listener {
 				if($player->getHealth() <= $event->getFinalDamage()) {
 					$event->setCancelled(TRUE);
 					$levelname = $player->getLevel()->getFolderName();
-					if(is_string(Bedwars::$players[$player->getName()]->getKnocker())) {
-						Bedwars::$arenas[$levelname]->broadcast("§e" . Bedwars::$players[$player->getName()]->getName() . "§f wurde von §e" .
-							Bedwars::$players[$player->getName()]->getKnocker() . " §fgetötet!");
-					} else {
-						Bedwars::$arenas[$levelname]->broadcast("§e" . Bedwars::$players[$player->getName()]->getName() . "§f ist gestorben!");
-					}
+                    if(is_string(Bedwars::$players[$player->getName()]->getKnocker())) {
+                        Bedwars::$arenas[$levelname]->broadcast("§e" . Bedwars::$players[$player->getName()]->getName() . "§f wurde von §e" .
+                            Bedwars::$players[$player->getName()]->getKnocker() . " §fgetötet!");
+                    } else {
+                        Bedwars::$arenas[$levelname]->broadcast("§e" . Bedwars::$players[$player->getName()]->getName() . "§f ist gestorben!");
+                    }
                     Bedwars::$statsSystem->set($player, 'deaths', (int)Bedwars::$statsSystem->get($player, 'deaths')+1);
 					if(is_string(Bedwars::$players[$player->getName()]->getKnocker())) {
                         $killer = Bedwars::getInstance()->getServer()->getPlayerExact(Bedwars::$players[$player->getName()]->getKnocker());
@@ -106,7 +106,12 @@ class EntityDamageListener implements Listener {
 					$levelname = $player->getLevel()->getFolderName();
 					$pos = Bedwars::$arenas[$levelname]->getSpawns()[Bedwars::$players[$player->getName()]->getPos()];
 					$player->teleport($pos);
-					Bedwars::$arenas[$levelname]->broadcast("§e" . Bedwars::$players[$player->getName()]->getName() . "§f ist gestorben!");
+                    if(is_string(Bedwars::$players[$player->getName()]->getKnocker())) {
+                        Bedwars::$arenas[$levelname]->broadcast("§e" . Bedwars::$players[$player->getName()]->getName() . "§f wurde von §e" .
+                            Bedwars::$players[$player->getName()]->getKnocker() . " §fgetötet!");
+                    } else {
+                        Bedwars::$arenas[$levelname]->broadcast("§e" . Bedwars::$players[$player->getName()]->getName() . "§f ist gestorben!");
+                    }
 					Bedwars::$players[$player->getName()]->die();
 				} else {
 					$player->teleport($player->getLevel()->getSafeSpawn());
