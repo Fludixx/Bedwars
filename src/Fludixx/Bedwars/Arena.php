@@ -27,25 +27,24 @@ class Arena {
 	const STATE_INUSE = 1;
 
 	/** @var string */
-	protected $name;
+	private $name;
 	/** @var int */
-	protected $playersProTeam;
+	private $playersProTeam;
 	/** @var int  */
-	protected $teams;
+	private $teams;
 	/** @var Level  */
-	protected $level;
+	private $level;
 	/** @var int */
-	protected $countdown;
+	private $countdown;
+	private $timer;
 	/** @var int */
-	protected $state;
+	private $state;
 	/** @var Vector3[] */
-	protected $spawns = [];
+	private $spawns = [];
 	/** @var bool[] */
-	protected $beds = [];
+	private $beds = [];
 	/** @var bool */
-	protected $hasGold = TRUE;
-	/** @var array */
-	public $drops_count = [];
+	private $hasGold = TRUE;
 
 	/**
 	 * Arena constructor.
@@ -62,6 +61,7 @@ class Arena {
 		$this->teams = $teams;
 		$this->level = $level;
 		$this->countdown = 60;
+		$this->timer = 0;
 		$this->state = Arena::STATE_OPEN;
 		foreach ($spawns as $id => $spawn) {
 			$this->spawns[$id] = new Vector3($spawn['x'], $spawn['y'], $spawn['z']);
@@ -145,7 +145,8 @@ class Arena {
 		foreach ($this->getPlayers() as $player) {
 			Bedwars::$players[$player->getName()]->saveTeleport(Bedwars::getInstance()->getServer()->getDefaultLevel()->getSafeSpawn());
 		}
-		$this->level->unload();
+		// $this->level->unload();
+		Bedwars::getInstance()->getServer()->unloadLevel($this->level);
 		Bedwars::getInstance()->getServer()->loadLevel($this->name);
 		$this->level = Bedwars::getInstance()->getServer()->getLevelByName($this->name);
 		$this->countdown = 60;
@@ -155,7 +156,7 @@ class Arena {
 		}
 		$this->level->setAutoSave(FALSE);
 		$this->setState(Arena::STATE_OPEN);
-		Bedwars::getInstance()->getServer()->broadcastMessage(Bedwars::PREFIX."Arena §b".$this->level->getFolderName()."§f ist nun frei!");
+		Bedwars::getInstance()->getServer()->broadcastMessage(Bedwars::PREFIX."Arena §b".$this->level->getFolderName()."§f is now free!");
 	}
 
 	/**
@@ -174,7 +175,7 @@ class Arena {
 
 	public function destroyBed(int $id) {
 		$this->beds[$id] = FALSE;
-		$this->broadcast("Das bett von ".Utils::ColorInt2Color(Utils::teamIntToColorInt($id))." wurde zerstört!");
+		$this->broadcast("The Bed of Team ".Utils::ColorInt2Color(Utils::teamIntToColorInt($id))." was destroyed!");
 		$this->level->addSound(new GhastShootSound($this->spawns[$id]));
 	}
 
@@ -214,14 +215,20 @@ class Arena {
         return $this->playersProTeam === 1 and $this->teams === 2;
     }
 
-    public function getDropsForPosition(Vector3 $pos) : int {
-        $id = $pos->x.$pos->y.$pos->z;
-        return $this->drops_count[$id];
+    /**
+     * @return int
+     */
+    public function getTimer(): int
+    {
+        return $this->timer;
     }
 
-    public function addDropsForPosition(Vector3 $pos, int $toAdd = 1) : int {
-        $id = $pos->x.$pos->y.$pos->z;
-        $this->drops_count[$id] += $toAdd;
+    /**
+     * @param int $timer
+     */
+    public function setTimer(int $timer): void
+    {
+        $this->timer = $timer;
     }
 
 }

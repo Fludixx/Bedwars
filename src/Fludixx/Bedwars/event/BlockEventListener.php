@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace Fludixx\Bedwars\event;
 
+use Fludixx\Bedwars\Arena;
 use Fludixx\Bedwars\Bedwars;
 use Fludixx\Bedwars\utils\Utils;
 use pocketmine\block\SignPost;
@@ -40,7 +41,13 @@ class BlockEventListener implements Listener
             $arenadata['spawns']["$spawnid"]['y'] = $event->getBlock()->getY();
             $arenadata['spawns']["$spawnid"]['z'] = $event->getBlock()->getZ();
             Bedwars::$provider->addArena($levelname, $arenadata);
-            $player->sendMsg("Du hast den Spawn von " . Utils::teamIntToColorInt($spawnid) . " gesetzt! (Nächstes: " . Utils::ColorInt2Color(Utils::teamIntToColorInt
+            if($spawnid >= (int)$arenadata['teams']) {
+                $player->sendMsg("You reached the limit of Teams for this Arena!");
+                Bedwars::$arenas[$arenadata['mapname']] =
+                    new Arena($arenadata['mapname'], (int)$arenadata['ppt'], (int)$arenadata['teams'], $player->getPlayer()->getLevel(), $arenadata['spawns']);
+                Bedwars::getInstance()->getServer()->dispatchCommand($player->getPlayer(), "leave");
+            }
+            $player->sendMsg("You placed the Spawn of " . Utils::teamIntToColorInt($spawnid) . ". (Next Team: " . Utils::ColorInt2Color(Utils::teamIntToColorInt
                 ($spawnid + 1)) . ")");
             $player->setPos($pos - 1);
         } else if ($pos === 0) {
@@ -52,7 +59,7 @@ class BlockEventListener implements Listener
             $pos->y -= 2;
             $tile = $event->getBlock()->getLevel()->getTile($pos);
             if ($tile instanceof Sign) {
-                $player->sendMsg("Du kannst auf keine Generatoren blöcke platzieren!");
+                $player->sendMsg("You can't place blocks there");
                 $event->setCancelled(TRUE);
             }
         }
@@ -85,10 +92,10 @@ class BlockEventListener implements Listener
                 $team = Utils::ColorIntToTeamInt($color);
                 if ($team === $pos) {
                     $event->setCancelled(TRUE);
-                    $player->sendMsg("Du kannst nicht dein eigenes Bett abbauen!");
+                    $player->sendMsg("You can't break your own Bed!");
                     $player->setVaule("ttbb", $player->getVaule("ttbb") + 1);
                     if ((int)$player->getVaule("ttbb") > 5) {
-                        $player->sendMsg("JUNGE! DU KANNST ES NICHT!!!!11");
+                        $player->sendMsg("Stop it. You can't");
                         $player->setVaule("ttbb", 0);
                     }
                 } else {

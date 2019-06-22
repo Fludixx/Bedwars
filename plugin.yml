@@ -1,6 +1,6 @@
 name: "Bedwars"
 description: "Bedwars Plugin for Pocketmine"
-version: 1.4
+version: 2.0
 api: [3.0.0]
 author: Fludixx
 main: Fludixx\Bedwars\Bedwars

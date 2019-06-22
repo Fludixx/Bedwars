@@ -40,18 +40,17 @@ class Utils {
 
 	public static function ColorInt2Color(int $int): string
 	{
-		if ($int == 14) {return f::RED . "Rot" . f::WHITE;}
-		if ($int == 11) {return f::BLUE . "Blau" . f::WHITE;}
-		if ($int == 5) {return f::GREEN . "Grün" . f::WHITE;}
-		if ($int == 4) {return f::YELLOW . "Gelb" . f::WHITE;}
+		if ($int == 14) {return f::RED . "Red" . f::WHITE;}
+		if ($int == 11) {return f::BLUE . "Blue" . f::WHITE;}
+		if ($int == 5) {return f::GREEN . "Green" . f::WHITE;}
+		if ($int == 4) {return f::YELLOW . "Yellow" . f::WHITE;}
 		if ($int == 6) {return f::LIGHT_PURPLE . "Pink" . f::WHITE;}
 		if ($int == 1) {return f::GOLD . "Orange" . f::WHITE;}
-		if ($int == 10) {return f::DARK_PURPLE . "Violett" . f::WHITE;}
-		if ($int == 0) {return f::WHITE . "Weiß";} else {return "???";}
+		if ($int == 10) {return f::DARK_PURPLE . "Purple" . f::WHITE;}
+		if ($int == 0) {return f::WHITE . "White";} else {return "???";}
 	}
 
 	public static function colorIntToPicture(int $int) {#
-	    $url = "null";
         if($int == 14) {$url = "https://d1u5p3l4wpay3k.cloudfront.net/minecraft_gamepedia/7/70/Red_Wool.png?version=c738bbbc3daae06f5a93837841b26d47";}
         if($int == 11) {$url = "https://d1u5p3l4wpay3k.cloudfront.net/minecraft_gamepedia/c/ce/Blue_Wool.png?version=2a1b4b021e10cad13cd75fa1f3adea7a";}
         if($int == 5) {$url = "https://d1u5p3l4wpay3k.cloudfront.net/minecraft_gamepedia/3/30/Lime_Wool.png?version=12f2e5f265ac507203b9eda28f478cd6";}

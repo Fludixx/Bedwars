@@ -30,12 +30,12 @@ class ChatListener implements Listener {
                 }
                 unset($messageArray[$index]);
                 $message = implode(" ", $messageArray);
-                $arena->broadcast(Utils::ColorInt2Color(Utils::teamIntToColorInt($player->getPos()))."§7 - {$player->getName()}"."§f -> §aEveryone§f: ".$message);
+                $arena->broadcast("§f[" . Utils::ColorInt2Color(Utils::teamIntToColorInt($player->getPos())) . "§f]" ." §7{$player->getName()}"."§f: ".$message);
             } else {
                 foreach ($arena->getPlayers() as $splayer) {
                     $bwplayer = Bedwars::$players[$splayer->getName()];
                     if ($bwplayer->getPos() === $player->getPos()) {
-                        $splayer->sendMessage("§e{$splayer->getName()} §f-> @" . Utils::ColorInt2Color(Utils::teamIntToColorInt($bwplayer->getPos())) . "§f: " . $event->getMessage());
+                        $splayer->sendMessage("§e{$splayer->getName()}" . Utils::ColorInt2Color(Utils::teamIntToColorInt($bwplayer->getPos())) . "§f: " . $event->getMessage());
                     }
                 }
             }

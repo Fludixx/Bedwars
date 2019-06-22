@@ -29,17 +29,10 @@ class InteractListener implements Listener {
 		$tile = $event->getBlock()->getLevel()->getTile($event->getBlock()->asVector3());
 		if($mplayer->getPos() === 0 and $tile instanceof Sign and $tile->getLine(0) === Bedwars::NAME) {
 			if($tile->getLine(3) === Bedwars::JOIN) {
-				$mplayer->sendMsg("Teleportiere...");
+				$mplayer->sendMsg("Teleporting...");
 				$arena = Bedwars::$arenas[$tile->getLine(1)];
 				if(count($arena->getPlayers()) < ($arena->getTeams() * $arena->getPlayersProTeam())) {
-                    rndTeam:
-                    $randomteam = mt_rand(1, $arena->getTeams());
-                    $tc = 0;
-                    foreach ($arena->getPlayers() as $p) {
-                        if (Bedwars::$players[$p->getName()]->getTeam() === $randomteam)
-                            $tc++;
-                    }
-                    if ($tc >= $arena->getPlayersProTeam()) goto rndTeam;
+                    $randomteam = $mplayer->getRandomTeam($arena);
                     $mplayer->setTeam($randomteam);
                     $mplayer->saveTeleport($arena->getLevel()->getSafeSpawn());
                     $inv = $mplayer->getPlayer()->getInventory();
@@ -47,13 +40,13 @@ class InteractListener implements Listener {
                     $inv->setItem(8, Item::get(Item::CHEST)->setCustomName("§eTeams"));
                     $inv->setItem(7, Item::get(Item::SLIME_BALL)->setCustomName("§cLeave"));
                     $inv->setItem(0, Item::get(Item::REDSTONE)->setCustomName("§6Goldvote"));
-                    $arena->broadcast("{$mplayer->getName()} ist beigetreten!");
+                    $arena->broadcast("{$mplayer->getName()} joined!");
                     return;
                 }
 			} else if($tile->getLine(3) === Bedwars::RUNNING or $tile->getLine(3) === Bedwars::FULL) {
                 $arena = Bedwars::$arenas[$tile->getLine(1)];
                 if($arena->getState() === Arena::STATE_INUSE) {
-                    $mplayer->sendMsg("Teleportiere...");
+                    $mplayer->sendMsg("Teleporting...");
                     $inv = $mplayer->getPlayer()->getInventory();
                     $inv->setItem(0, Item::get(Item::SLIME_BALL)->setCustomName("§cLeave"));
                     $mplayer->setSpectator();
@@ -61,23 +54,20 @@ class InteractListener implements Listener {
                     $mplayer->saveTeleport($arena->getLevel()->getSafeSpawn());
                 }
             }
-			$mplayer->sendMsg("Du kannst dieser Runde nicht beitreten!");
+			$mplayer->sendMsg("You can't join this Round!");
 		}
 		switch ($event->getItem()->getCustomName()) {
 			case "§eTeams":
 				$menu = InvMenu::create(InvMenu::TYPE_CHEST);
 				$menu->readonly();
-				$menu->setName("Wähle dein Team aus!");
+				$menu->setName("Select your Team!");
 				$minv = $menu->getInventory();
 				$levelname = $mplayer->getPlayer()->getLevel()->getFolderName();
 				$arena = Bedwars::$arenas[$levelname];
-				$teams = [
-					0 => [],	1 => [],
-					2 => [],	3 => [],
-					4 => [],	5 => [],
-					6 => [],	7 => [],
-					8 => []
-				];
+				$teams = [];
+				for($i = 1;$i <= $arena->getTeams();$i++) {
+				    $teams[$i] = [];
+                }
 				foreach ($arena->getLevel()->getPlayers() as $player) {
 					$mplayer = Bedwars::$players[$player->getName()];
 					$teams[$mplayer->getTeam()][] = $mplayer->getName();
@@ -97,12 +87,12 @@ class InteractListener implements Listener {
                 $form = new ModalFormRequestPacket();
                 $form->formId = 156;
                 $form->formData = json_encode([
-                    'title' => "Soll mit Gold gespielt werden?",
+                    'title' => "Play with or without Gold?",
                     'type' => "form",
                     'content' => "",
                     'buttons' => [
-                        0 => ['text' => "§aMit Gold!"],
-                        1 => ['text' => "§cOhne Gold!"]
+                        0 => ['text' => "§aWith Gold!"],
+                        1 => ['text' => "§cWithout Gold!"]
                     ]
                 ]);
                 $event->getPlayer()->sendDataPacket($form);
@@ -121,10 +111,10 @@ class InteractListener implements Listener {
             if(!is_null($action)) {
                 if ($action === 1) {
                     $mplayer->setForGold(FALSE);
-                    $mplayer->sendMsg("Du hast §cFÜR KEIN§f Gold gestimmt!");
+                    $mplayer->sendMsg("You wan't to play §cWITHOUT§f gold");
                 } else {
                     $mplayer->setForGold(TRUE);
-                    $mplayer->sendMsg("Du hast §aFÜR§f Gold gestimmt!");
+                    $mplayer->sendMsg("You wan't to play §aWITH§f gold");
                 }
             }
         }

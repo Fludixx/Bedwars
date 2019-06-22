@@ -21,7 +21,7 @@ class leaveCommand extends Command {
 	public function __construct()
 	{
 		parent::__construct("leave",
-			"Teleportiert dich zum Spawn",
+			"Teleports you back to the Spawn",
 			"/leave",  ["l"]);
 	}
 

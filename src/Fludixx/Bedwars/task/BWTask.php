@@ -47,44 +47,13 @@ class BWTask extends Task {
 				        $playerabw = Bedwars::$players[$playeraaa->getName()];
 				        $playerabw->isForGold() ? $gold++ : $gold--;
                     }
-				    $result = $gold >= 0 ? "§aMIT GOLD" : "§cOHNE GOLD";
-				    $arena->broadcast("Goldvoting vorbei!");
-				    $arena->broadcast("Ergebniss: $result");
+				    $result = $gold >= 0 ? "§aWith gold" : "§cWithout gold!";
+				    $arena->broadcast("Goldvoting has ended");
+				    $arena->broadcast("Result: $result");
 				    $arena->setHasGold($gold >= 0 ? TRUE : FALSE);
                 }
 				if($arena->getCountdown() === 0) {
 					$arena->setState(Arena::STATE_INUSE);
-                    /**
-                     * Setup the Fake spawners, this code will only spawn 1 material so phone or low spec players will have a smooth experience
-                     * @see TakeItemListener.php
-                     */
-					foreach ($arena->getLevel()->getTiles() as $tile) {
-					    if($tile instanceof Sign) {
-                            $pos = $tile->asVector3();
-                            $id = $pos->x.$pos->y.$pos->z;
-                            $arena->drops_count[$id] = 0;
-                            $pos = $tile->asVector3();
-                            $pos->y = $pos->y+2;
-                            $pos->x = $pos->x+0.5;
-                            $pos->z = $pos->z+0.5;
-                            switch (strtolower($tile->getLine(0))[0]) {
-                                case 'b':
-                                    $i = Item::get(Item::BRICK);
-                                    $i->setCustomName("BRICK");
-                                    $tile->getLevel()->dropItem($pos, $i, new Vector3(0, 0, 0));
-                                    break;
-                                case 'i':
-                                    $i = Item::get(Item::IRON_INGOT);
-                                    $i->setCustomName("IRON");
-                                    $tile->getLevel()->dropItem($pos, $i, new Vector3(0, 0, 0));
-                                    break;
-                                case 'g':
-                                    $i = Item::get(Item::GOLD_INGOT);
-                                    $i->setCustomName("GOLD");
-                                    $tile->getLevel()->dropItem($pos, $i, new Vector3(0, 0, 0));
-                            }
-                        }
-                    }
 					foreach ($arena->getPlayers() as $player) {
 						$mplayer = Bedwars::$players[$player->getName()];
 						if(!$mplayer->isSpectator()) {
@@ -92,7 +61,7 @@ class BWTask extends Task {
                             $mplayer->setTeam(0);
                             $player->getInventory()->clearAll();
                             $player->getArmorInventory()->clearAll();
-                            $mplayer->sendMsg("Das Spiel ist gestartet!");
+                            $mplayer->sendMsg("The Game has started!");
                             $player->teleport($arena->getSpawns()[$mplayer->getPos()]);
                             $player->setDisplayName(Utils::ColorInt2Color(Utils::teamIntToColorInt($mplayer->getPos())) . " " . $player->getName());
                         }
@@ -134,7 +103,7 @@ class BWTask extends Task {
 					foreach ($arena->getPlayers() as $player) {
 						$mplayer = Bedwars::$players[$player->getName()];
                         if(!$mplayer->isSpectator()) {
-                            $mplayer->getPlayer()->addTitle("§aDu hast gewonnen!");
+                            $mplayer->getPlayer()->addTitle("§aYou won!");
                             $mplayer->setPos(0);
                             $player->getInventory()->setContents([
                                 0 => Item::get(Item::IRON_SWORD)
@@ -152,13 +121,12 @@ class BWTask extends Task {
 				foreach ($arena->getLevel()->getTiles() as $tile) {
 					if($tile instanceof Sign) {
 						$pos = $tile->asVector3();
-                        $id = $pos->x . $pos->y . $pos->z;
                         if(strtolower($tile->getLine(0))[0] === 'b') {
-                            $arena->drops_count[$id]++;
+                            $arena->getLevel()->dropItem($pos->add(0.5, 2, 0.5), Item::get(Item::BRICK), new Vector3(0, 0, 0));
                         } else if(strtolower($tile->getLine(0))[0] === 'i' and time()%30 === 0) {
-                            $arena->drops_count[$id]++;
-                        } else if(strtolower($tile->getLine(0))[0] === 'g' and time()%60 === 1) {
-                            $arena->drops_count[$id]++;
+                            $arena->getLevel()->dropItem($pos->add(0.5, 2, 0.5), Item::get(Item::IRON_INGOT), new Vector3(0, 0, 0));
+                        } else if(strtolower($tile->getLine(0))[0] === 'g' and $arena->getTimer()%60 === 0) {
+                            $arena->getLevel()->dropItem($pos->add(0.5, 2, 0.5), Item::get(Item::GOLD_INGOT), new Vector3(0, 0, 0));
                         }
 					}
 				}
@@ -167,12 +135,13 @@ class BWTask extends Task {
 				$sb = new Scoreboard($name);
 				$sb->setTitle("§e§l$name");
 				$sb->setLine(1, "Timer: §b".$arena->getCountdown());
-				$sb->setLine(1, "Spieler: §a".(count($arena->getPlayers()))."§f / §c".($arena->getPlayersProTeam()+1));
+				$sb->setLine(1, "Players: §a".(count($arena->getPlayers()))."§f / §c".($arena->getPlayersProTeam()+1));
 				foreach ($arena->getPlayers() as $player) {
 					$mplayer = Bedwars::$players[$player->getName()];
 					$mplayer->sendScoreboard($sb);
 				}
 			}
+			$arena->setTimer($arena->getTimer() + 1);
 		}
 	}
 

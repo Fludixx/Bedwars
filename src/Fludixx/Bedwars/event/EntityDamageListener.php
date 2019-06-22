@@ -32,10 +32,10 @@ class EntityDamageListener implements Listener {
 					$levelname = $player->getLevel()->getFolderName();
 					$pos = Bedwars::$arenas[$levelname]->getSpawns()[Bedwars::$players[$player->getName()]->getPos()];
 					$player->teleport($pos);
-					Bedwars::$arenas[$levelname]->broadcast("§e" . Bedwars::$players[$player->getName()]->getName() . "§f wurde von §e" .
-						Bedwars::$players[$damager->getName()]->getName() . " §fgetötet!");
+					Bedwars::$arenas[$levelname]->broadcast("§e" . Bedwars::$players[$player->getName()]->getName() . "§f was killed by §e" .
+						Bedwars::$players[$damager->getName()]->getName());
                     Bedwars::$statsSystem->set($player, 'deaths', (int)Bedwars::$statsSystem->get($player, 'deaths')+1);
-                    Bedwars::$statsSystem->set($damager, 'kills', (int)Bedwars::$statsSystem->get($damager, 'deaths')+1);
+                    Bedwars::$statsSystem->set($damager, 'kills', (int)Bedwars::$statsSystem->get($damager, 'kills')+1);
                     Bedwars::$players[$player->getName()]->die();
 				}
 				return;
@@ -45,15 +45,15 @@ class EntityDamageListener implements Listener {
 			    $mdamager = Bedwars::$players[$damager->getName()];
 			    $mdamager->setVaule('hit', $player->getName());
 			    $mplayer = Bedwars::$players[$player->getName()];
-			    $mdamager->sendMsg("Du hast {$mplayer->getName()} herrausgefordet!");
-			    $mplayer->sendMsg("{$mdamager->getName()} hat dich herrausgefordet!");
+			    $mdamager->sendMsg("You have challenged {$mplayer->getName()}!");
+			    $mplayer->sendMsg("{$mdamager->getName()} has challenged you!");
 			    if($mplayer->getVaule('hit') === $damager->getName()) {
-			        $mplayer->sendMsg("Suche Arena...");
-			        $mdamager->sendMsg("Suche Arena...");
+			        $mplayer->sendMsg("Searching for an empty Arena...");
+			        $mdamager->sendMsg("Searching for an empty Arena...");
 			        foreach (Bedwars::$arenas as $name => $class) {
 			            if($class->isDuelMap() and count($class->getPlayers()) === 0 and $class->getState() === Arena::STATE_OPEN) {
-			                $mplayer->sendMsg("Arena $name gefunden!");
-			                $mdamager->sendMsg("Arena $name gefunden!");
+			                $mplayer->sendMsg("Arena $name found!");
+			                $mdamager->sendMsg("Arena $name found!");
                             $mplayer->setTeam(1);
 			                $mdamager->setTeam(2);
                             $mplayer->saveTeleport($class->getLevel()->getSafeSpawn());
@@ -64,8 +64,8 @@ class EntityDamageListener implements Listener {
                             return;
                         }
                     }
-			        $mplayer->sendMsg("Keine freie Arena gefunden!");
-			        $mdamager->sendMsg("Keine freie Arena gefunden!");
+			        $mplayer->sendMsg("No free Arena found :(");
+			        $mdamager->sendMsg("No free Arena found :(");
 			        return;
                 }
             }
@@ -84,10 +84,10 @@ class EntityDamageListener implements Listener {
 					$event->setCancelled(TRUE);
 					$levelname = $player->getLevel()->getFolderName();
                     if(is_string(Bedwars::$players[$player->getName()]->getKnocker())) {
-                        Bedwars::$arenas[$levelname]->broadcast("§e" . Bedwars::$players[$player->getName()]->getName() . "§f wurde von §e" .
-                            Bedwars::$players[$player->getName()]->getKnocker() . " §fgetötet!");
+                        Bedwars::$arenas[$levelname]->broadcast("§e" . Bedwars::$players[$player->getName()]->getName() . "§f was killed by §e" .
+                            Bedwars::$players[$player->getName()]->getKnocker());
                     } else {
-                        Bedwars::$arenas[$levelname]->broadcast("§e" . Bedwars::$players[$player->getName()]->getName() . "§f ist gestorben!");
+                        Bedwars::$arenas[$levelname]->broadcast("§e" . Bedwars::$players[$player->getName()]->getName() . "§f has died!");
                     }
                     Bedwars::$statsSystem->set($player, 'deaths', (int)Bedwars::$statsSystem->get($player, 'deaths')+1);
 					if(is_string(Bedwars::$players[$player->getName()]->getKnocker())) {
@@ -107,10 +107,10 @@ class EntityDamageListener implements Listener {
 					$pos = Bedwars::$arenas[$levelname]->getSpawns()[Bedwars::$players[$player->getName()]->getPos()];
 					$player->teleport($pos);
                     if(is_string(Bedwars::$players[$player->getName()]->getKnocker())) {
-                        Bedwars::$arenas[$levelname]->broadcast("§e" . Bedwars::$players[$player->getName()]->getName() . "§f wurde von §e" .
-                            Bedwars::$players[$player->getName()]->getKnocker() . " §fgetötet!");
+                        Bedwars::$arenas[$levelname]->broadcast("§e" . Bedwars::$players[$player->getName()]->getName() . "§f was killed by §e" .
+                            Bedwars::$players[$player->getName()]->getKnocker());
                     } else {
-                        Bedwars::$arenas[$levelname]->broadcast("§e" . Bedwars::$players[$player->getName()]->getName() . "§f ist gestorben!");
+                        Bedwars::$arenas[$levelname]->broadcast("§e" . Bedwars::$players[$player->getName()]->getName() . "§f died!");
                     }
 					Bedwars::$players[$player->getName()]->die();
 				} else {

@@ -19,7 +19,7 @@ class BuildCommand extends Command {
 
     public function __construct()
     {
-        parent::__construct("bwbuild", "Change node to: Build Mode", "/build", []);
+        parent::__construct("bwbuild", "Change mode to: Build Mode", "/build", []);
         $this->setPermission("bw.build");
     }
 
@@ -29,13 +29,13 @@ class BuildCommand extends Command {
             $mplayer = Bedwars::$players[$sender->getName()];
             $mplayer->setCanBuild(!$mplayer->canBuild());
             if($mplayer->canBuild()) {
-                $mplayer->sendMsg("Du kannst nun bauen!");
+                $mplayer->sendMsg("You can now place & break blocks!");
             } else {
-                $mplayer->sendMsg("Du kannst nun nicht mehr bauen!");
+                $mplayer->sendMsg("You can't build now!");
             }
             return TRUE;
         } else {
-            $sender->sendMessage("§cDie fehlt die bw.build Berechtigung!");
+            $sender->sendMessage("§cYou don't have the Permissions for this command");
         }
     }
 

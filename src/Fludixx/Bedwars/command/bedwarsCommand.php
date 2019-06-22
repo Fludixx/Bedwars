@@ -42,8 +42,8 @@ class bedwarsCommand extends Command {
 				$mode = $args[1];
 				$mode = str_replace("x", "*", $mode);
 				$maxplayers = eval("return ".$args[1].";");
-				if((int)$args[1][0] > 8 or (int)$args[1][2] > 8) {
-					$player->sendMsg("Teams oder Spieler sind über 8! (MAX: 8*8)");
+				if((int)$args[1][0] > 8) {
+					$player->sendMsg("You can't add more than 8 Teams");
 					return FALSE;
 				} else {
 					if($this->bedwars->getServer()->loadLevel($levelname)) {
@@ -59,20 +59,20 @@ class bedwarsCommand extends Command {
 						$player->setPos(-1);
 						$sender->getInventory()->setItem(0, Item::get(35, Utils::teamIntToColorInt(1)));
 						$sender->teleport($level->getSafeSpawn());
-						$player->sendMsg("Bitte berühre die Spawns der Spieler!");
+						$player->sendMsg("Please Place the Blocks to set the Team spawns");
 						$player->sendMsg("verwende /leave um zum Spawn zu kommen");
 						Bedwars::$arenas[$player->getPlayer()->getLevel()->getFolderName()] =
 							new Arena($player->getPlayer()->getLevel()->getFolderName(),
 								(int)$mode[2], (int)$mode[0], $sender->getLevel(), []);
 						return TRUE;
 					} else {
-						$player->sendMsg("Fehler: 1 Parameter muss ein Levelname sein!");
+						$player->sendMsg("Error: 1 Argument must be a Levelname!");
 						return FALSE;
 					}
 				}
 			}
 		} else {
-			$sender->sendMessage(Bedwars::PREFIX."/bw kann nur verwendet werden wenn du über die bw.admin berechtigung verfügst!");
+			$sender->sendMessage(Bedwars::PREFIX."You don't have the Permissions to add Arenas");
 			return FALSE;
 		}
 	}

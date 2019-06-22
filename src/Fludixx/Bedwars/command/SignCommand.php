@@ -33,10 +33,10 @@ class SignCommand extends Command {
 			} else {
 				$arenas = Bedwars::$provider->getArenas();
 				if(!isset($arenas[$args[0]])) {
-					$sender->sendMessage(Bedwars::PREFIX."Arena nicht gefunden");
+					$sender->sendMessage(Bedwars::PREFIX."Arena not found! Be sure to register it");
 					return FALSE;
 				} else {
-					$sender->sendMessage(Bedwars::PREFIX."Zerstöre ein Schild!");
+					$sender->sendMessage(Bedwars::PREFIX."Break a Sign");
 					Bedwars::$players[$sender->getName()]->setPos(-11);
 					Bedwars::$players[$sender->getName()]->setKnocker($args[0]);
 					return TRUE;

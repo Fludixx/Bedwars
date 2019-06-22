@@ -1,64 +1,74 @@
 <?php
 
-declare(strict_types=1);
-
-/**
- * Bedwars - JsonStats.php
- * @author Fludixx
- * @license MIT
- */
 
 namespace Fludixx\Bedwars\ranking;
 
+
 use Fludixx\Bedwars\Bedwars;
-use Fludixx\Bedwars\task\LoadStatsTask;
-use Fludixx\Bedwars\utils\PlayerId;
 use pocketmine\Player;
 use pocketmine\utils\Config;
 
-class JsonStats implements StatsInterface {
+class JsonStats implements StatsInterface
+{
 
-    protected $registered = [];
-    public $stats = [];
-    public $config;
+    private $config;
 
+    /**
+     * JsonStats constructor.
+     * Going to rewrite the stats system when i find time
+     */
     public function __construct()
     {
-        if(PHP_OS === "Windows" or PHP_OS === "WIN32")
-            @mkdir("/home");
-        @mkdir("/home/bedwars");
-        $this->config = new Config("/home/bedwars/stats.json");
-        Bedwars::getInstance()->getLogger()->notice("Loading player stats into memory...");
-        Bedwars::getInstance()->getServer()->getAsyncPool()->submitTask(new LoadStatsTask($this, LoadStatsTask::JSON, "/home/bedwars/stats.json"));
+        $this->config = new Config(Bedwars::getInstance()->getDataFolder()."/stats.json", Config::JSON);
     }
 
+    /**
+     * @param Player $player
+     * @param string $key
+     * @param        $value
+     * @return mixed
+     */
     public function set(Player $player, string $key, $value)
     {
-        $id = new PlayerId($player->getName());
-        $this->stats[$id->__toString()][$key] = $value;
+        $this->config->setNested($player->getName() . ".$key", $value);
+        $this->config->save();
     }
 
+    /**
+     * @param Player $player
+     * @param string $key
+     * @return mixed
+     */
     public function get(Player $player, string $key)
     {
-        $id = new PlayerId($player->getName());
-        return $this->stats[$id->__toString()][$key];
+        return $this->config->getNested($player->getName() . ".$key");
     }
 
+    /**
+     * @param Player $player
+     * @return mixed
+     */
     public function register(Player $player)
     {
-        $id = new PlayerId($player->getName());
-        $this->stats[$id->__toString()] = [];
+        $this->config->set($player->getName(), []);
+        $this->config->save();
     }
 
+    /**
+     * @param Player $player
+     * @return bool
+     */
     public function isRegistered(Player $player): bool
     {
-        $id = new PlayerId($player->getName());
-        return isset($this->stats[$id->__toString()]);
+        return $this->config->exists($player->getName());
     }
 
+    /**
+     * @param Player $player
+     * @return array
+     */
     public function getAll(Player $player): array
     {
-        $id = new PlayerId($player->getName());
-        return $this->stats[$id->__toString()];
+        return $this->config->get($player->getName());
     }
 }

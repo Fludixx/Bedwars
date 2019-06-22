@@ -34,17 +34,17 @@ class ChestListener
 				}
 			}
 			if ($playersInTeam >= $maxTeamMembers) {
-				$player->sendMessage(Bedwars::PREFIX . "Team $teamname ist schon voll!");
+				$player->sendMessage(Bedwars::PREFIX . "Team $teamname is already full!");
 				$join = false;
 			} else {
 				if ($playersInTeam == 0 && $playersInOtherTeams == 0) {
-					$player->sendMessage(Bedwars::PREFIX . "du bist Team $teamname beigetreten!");
+					$player->sendMessage(Bedwars::PREFIX . "You entered the $teamname Team!");
 					$join = true;
-				} elseif ($playersInTeam >= 1 && $playersInOtherTeams == 0) {
-					$player->sendMessage(Bedwars::PREFIX . "Du kannst nicht Team $teamname beitreten!");
-					$join = false;
+                } elseif ($playersInTeam >= 1 && $playersInOtherTeams == 0) {
+                    $player->sendMessage(Bedwars::PREFIX . "You can't join the $teamname Team");
+                    $join = false;
 				} elseif ($playersInTeam =! 0 && $playersInOtherTeams != 0 && $playersInTeam < $maxTeamMembers) {
-					$player->sendMessage(Bedwars::PREFIX . "du bist Team $teamname beigetreten!");
+					$player->sendMessage(Bedwars::PREFIX . "You joined the $teamname Team");
 					$join = true;
 				}
 			}

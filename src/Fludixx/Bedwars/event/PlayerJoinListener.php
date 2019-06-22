@@ -26,7 +26,7 @@ class PlayerJoinListener implements Listener {
             Bedwars::$statsSystem->set($event->getPlayer(), 'kills', 0);
             Bedwars::$statsSystem->set($event->getPlayer(), 'deaths', 0);
             Bedwars::$statsSystem->set($event->getPlayer(), 'beds', 0);
-            Bedwars::$statsSystem->set($event->getPlayer(), '.anfragen', TRUE);
+            Bedwars::$statsSystem->set($event->getPlayer(), ':requests', TRUE);
         }
 		$event->getPlayer()->getInventory()->setContents([
             0 => Item::get(Item::IRON_SWORD)

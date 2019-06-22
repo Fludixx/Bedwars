@@ -3,7 +3,7 @@
 /**
  * Bedwars - BWPlayer.php
  * @author Fludixx
- * @license MIT
+ * @license GP
  */
 
 declare(strict_types=1);
@@ -37,6 +37,8 @@ class BWPlayer {
 	protected $team;
 	/** @var string */
 	protected $knocker = NULL;
+	/** @var int */
+	protected $knockedAt = 0;
 	/** @var bool */
 	protected $fuerGold = TRUE;
 	/** @var array */
@@ -134,6 +136,7 @@ class BWPlayer {
 	public function setKnocker(string $knocker) : void
 	{
 		$this->knocker = $knocker;
+	    $this->knockedAt = time();
 	}
 
 	/**
@@ -141,7 +144,8 @@ class BWPlayer {
 	 */
 	public function getKnocker()
 	{
-		return $this->knocker;
+	    if(time() - $this->knockedAt > 15) return null;
+		else return $this->knocker;
 	}
 
 	/**
@@ -258,6 +262,20 @@ class BWPlayer {
      */
     public function getVaule($key) {
 	    return isset($this->extraData[$key]) ? $this->extraData[$key] : 0;
+    }
+
+    public function getRandomTeam(Arena $arena): int {
+        $randomteam = mt_rand(1, $arena->getTeams());
+        $tc = 0;
+        foreach ($arena->getPlayers() as $p) {
+            if (Bedwars::$players[$p->getName()]->getTeam() === $randomteam) {
+                $tc++;
+            }
+        }
+        if($tc >= $arena->getPlayersProTeam()) {
+            return $this->getRandomTeam($arena);
+        }
+        return $randomteam;
     }
 
 }

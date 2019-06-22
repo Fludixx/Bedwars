@@ -47,15 +47,15 @@ class Bedwars extends PluginBase {
 	const NAME    = "§c- Bedwars -";
 	const PREFIX  = "§7[§cBedwars§7] §f";
 	const JOIN    = "§a[JOIN]";
-	const FULL    = "§c[VOLL]";
+	const FULL    = "§c[FULL]";
 	const RUNNING = "§7[SPECTATE]";
-	const BLOCKS = [
+	const BLOCKS = [ // Breakable blocks
 		Block::SANDSTONE, Block::END_STONE, Block::GLASS,
 		Block::CHEST, Block::IRON_BLOCK, Block::COBWEB
 	];
 
 	/** @var Bedwars */
-	protected static $instance;
+	private static $instance;
 	/** @var ProviderInterface */
 	public static $provider;
 	/** @var BWPlayer[] */
@@ -65,7 +65,7 @@ class Bedwars extends PluginBase {
 	public static $mysqlLogin = [];
 	/** @var StatsInterface */
 	public static $statsSystem;
-	protected $settings = [
+	private $settings = [
 	    'stats' => 'json'
     ];
 
@@ -106,17 +106,16 @@ class Bedwars extends PluginBase {
             InvMenuHandler::register(Bedwars::getInstance());
 	}
 
-    protected function registerEvents() {
+    private function registerEvents() {
 		$pm = $this->getServer()->getPluginManager();
 		$pm->registerEvents(new PlayerJoinListener(), $this);
 		$pm->registerEvents(new EntityDamageListener(), $this);
 		$pm->registerEvents(new BlockEventListener(), $this);
 		$pm->registerEvents(new InteractListener(), $this);
 		$pm->registerEvents(new ChatListener(), $this);
-		$pm->registerEvents(new TakeItemListener(), $this);
 	}
 
-	protected function registerCommands() {
+	private function registerCommands() {
 		$map = $this->getServer()->getCommandMap();
 		$map->register("bw", new bedwarsCommand());
 		$map->register("leave", new leaveCommand());
@@ -126,21 +125,16 @@ class Bedwars extends PluginBase {
 		$map->register("bwbuild", new BuildCommand());
 	}
 
-	protected function loadArenas() {
+	private function loadArenas() {
 		foreach (self::$provider->getArenas() as $name => $data) {
 			$this->getServer()->loadLevel($data['mapname']);
 			$level = $this->getServer()->getLevelByName($data['mapname']);
-			self::$arenas[$name] = new Arena($data['mapname'], (int)$data['ppt'], (int)$data['teams'], $level, $data['spawns']);
+            self::$arenas[$name] = new Arena($data['mapname'], (int)$data['ppt'], (int)$data['teams'], $level, $data['spawns']);
 		}
 	}
 
 	public static function saveStats() {
-	    $statsSystem = Bedwars::$statsSystem;
-	    if($statsSystem instanceof JsonStats) {
-	        $statsSystem->config->setAll($statsSystem->stats);
-	        $statsSystem->config->save();
-        }
-        self::getInstance()->getLogger()->info("§aAll stats were saved!");
+	    // TODO: Rewrite stats system
     }
 
     public function onDisable()

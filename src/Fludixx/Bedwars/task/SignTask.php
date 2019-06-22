@@ -27,15 +27,19 @@ class SignTask extends Task {
 		foreach ($level->getTiles() as $tile) {
 			if($tile instanceof Sign and $tile->getLine(0) === Bedwars::NAME) {
 				$levelname = $tile->getLine(1);
-				$arena = Bedwars::$arenas[$levelname];
-				$players = count($arena->getPlayers());
-				if($players < ((int)$arena->getPlayersProTeam() * (int)$arena->getTeams())) {
-					$state = $arena->getState() === Arena::STATE_OPEN ? Bedwars::JOIN : Bedwars::RUNNING;
-				} else {
-					$state = Bedwars::FULL;
-				}
-				$tile->setLine(3, $state);
-				$tile->setLine(2, "§a$players §7/ §c".((int)$arena->getPlayersProTeam() * (int)$arena->getTeams()));
+				try {
+                    $arena = Bedwars::$arenas[$levelname];
+                    $players = count($arena->getPlayers());
+                    if ($players < ((int)$arena->getPlayersProTeam() * (int)$arena->getTeams())) {
+                        $state = $arena->getState() === Arena::STATE_OPEN ? Bedwars::JOIN : Bedwars::RUNNING;
+                    } else {
+                        $state = Bedwars::FULL;
+                    }
+                    $tile->setLine(3, $state);
+                    $tile->setLine(2, "§a$players §7/ §c" . ((int)$arena->getPlayersProTeam() * (int)$arena->getTeams()));
+                } catch (\ErrorException $ex) {
+				    $tile->setText("Invalid Sign", "", "", "");
+                }
 			}
 		}
 	}
