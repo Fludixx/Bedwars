@@ -3,7 +3,7 @@
 /**
  * Bedwars - BWPlayer.php
  * @author Fludixx
- * @license GP
+ * @license MIT
  */
 
 declare(strict_types=1);
