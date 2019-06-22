@@ -35,6 +35,9 @@ class SignTask extends Task {
                     } else {
                         $state = Bedwars::FULL;
                     }
+                    if($arena->getState() === Arena::STATE_INUSE) {
+                        $state = Bedwars::RUNNING;
+                    }
                     $tile->setLine(3, $state);
                     $tile->setLine(2, "§a$players §7/ §c" . ((int)$arena->getPlayersProTeam() * (int)$arena->getTeams()));
                 } catch (\ErrorException $ex) {
